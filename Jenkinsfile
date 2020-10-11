@@ -7,7 +7,7 @@ podTemplate(containers: [
   node(POD_LABEL) {
     stage('Build a Maven project') {
       container('maven') {
-        scm checkout
+        checkout scm
         sh 'mvn -B clean package'
       }
     }
