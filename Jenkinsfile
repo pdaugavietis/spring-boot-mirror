@@ -5,10 +5,20 @@ podTemplate(containers: [
   ]) {
 
   node(POD_LABEL) {
-    stage('Build a Maven project') {
+    checkout scm
+    stage('Build Project') {
       container('maven') {
-        checkout scm
-        sh 'mvn -B clean package'
+        sh 'mvn -B clean compile'
+      }
+    }
+    stage('Test Project') {
+      container('maven') {
+        sh 'mvn -B test'
+      }
+    }
+    stage('Generate Artifact Project') {
+      container('maven') {
+        sh 'mvn -B package'
       }
     }
   }
