@@ -13,7 +13,7 @@ podTemplate(containers: [
         } else {
             bat "./mvnw.cmd clean compile -DskipTests"
         }
-      } 'Static Analysis': {
+      }, 'Static Analysis': {
         stage("Checkstyle") {
             sh "./mvnw checkstyle:checkstyle"
             
