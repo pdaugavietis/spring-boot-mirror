@@ -4,17 +4,20 @@ podTemplate(containers: [
   persistentVolumeClaim(mountPath: '/root/.m2/repository', claimName: 'maven-repo', readOnly: false)
   ]) {
 
-  node("maven") {
+  node(NODE_LABEL) {
     checkout scm
     stage('Compile and Analysis') {
       parallel 'Compilation': {
-        if (isUnix()) {
-            sh "mvn clean compile -DskipTests"
-        } else {
-            bat "mvn.cmd clean compile -DskipTests"
+        container("maven") {
+          if (isUnix()) {
+              sh "mvn clean compile -DskipTests"
+          } else {
+              bat "mvn.cmd clean compile -DskipTests"
+          }
         }
       }, 'Static Analysis': {
         stage("Checkstyle") {
+          container("maven") {
             sh "mvn checkstyle:checkstyle"
             
             step([$class: 'CheckStylePublisher',
@@ -25,13 +28,16 @@ podTemplate(containers: [
               unHealthy: '90',
               useStableBuildAsReference: true
             ])
+          }
         }
         }, 'SonarQube Analysis': {
           stage("Sonarqube") {
-            if (isUnix()) {
-                sh "SONAR_TOKEN=d1f1cf8d1499413fce7ce3596910c966de2fed3e mvn verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar"
-            } else {
-                bat "SONAR_TOKEN=d1f1cf8d1499413fce7ce3596910c966de2fed3e mvn verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar"
+            container("maven") {
+              if (isUnix()) {
+                  sh "SONAR_TOKEN=d1f1cf8d1499413fce7ce3596910c966de2fed3e mvn verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar"
+              } else {
+                  bat "SONAR_TOKEN=d1f1cf8d1499413fce7ce3596910c966de2fed3e mvn verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar"
+              }
             }
           }
         }
@@ -40,21 +46,24 @@ podTemplate(containers: [
     stage('Tests and Deployment') {
       parallel 'Unit Tests': {
         stage("Running Unit Tests") {
-          try {
-              if (isUnix()) {
-                  sh "mvn test -Punit"
-              } else {
-                  bat "mvn.cmd test -Punit"
-              }
-          } catch(err) {
-              step([$class: 'JUnitResultArchiver', testResults: '**/target/surefire-reports/TEST-*UnitTest.xml'])
-              throw err
+          container("maven") {
+            try {
+                if (isUnix()) {
+                    sh "mvn test -Punit"
+                } else {
+                    bat "mvn.cmd test -Punit"
+                }
+            } catch(err) {
+                step([$class: 'JUnitResultArchiver', testResults: '**/target/surefire-reports/TEST-*UnitTest.xml'])
+                throw err
+            }
+            step([$class: 'JUnitResultArchiver', testResults: '**/target/surefire-reports/TEST-*UnitTest.xml'])
           }
-          step([$class: 'JUnitResultArchiver', testResults: '**/target/surefire-reports/TEST-*UnitTest.xml'])
         }
       }, 'Integration Tests': {
         stage("Running integration tests") {
-            try {
+          container("maven") {
+              try {
                 if (isUnix()) {
                     sh "mvn test -Pintegration"
                 } else {
@@ -65,13 +74,16 @@ podTemplate(containers: [
                 throw err
             }
             step([$class: 'JUnitResultArchiver', testResults: '**/target/surefire-reports/TEST-*IntegrationTest.xml'])
+          }
         }
       }
     }
 
     stage('Generate Artifact Project') {
       container('maven') {
-        sh 'mvn -B package'
+        container("maven") {
+          sh 'mvn -B package'
+        }
       }
     }
   }
