@@ -10,9 +10,9 @@ podTemplate(containers: [
       parallel 'Compilation': {
         container("maven") {
           if (isUnix()) {
-              sh "mvn clean compile -DskipTests"
+              sh "mvn clean compile -DskipTests -Dmaven.test.skip=true"
           } else {
-              bat "mvn.cmd clean compile -DskipTests"
+              bat "mvn.cmd clean compile -DskipTests -Dmaven.test.skip=true"
           }
         }
       }, 'Static Analysis': {
