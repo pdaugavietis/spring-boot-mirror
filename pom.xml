@@ -16,9 +16,13 @@
 
 	<properties>
     <java.version>8</java.version>
+    
     <sonar.projectKey>SBD</sonar.projectKey>
     <sonar.organization>encompass-poc</sonar.organization>
-    <sonar.host.url>https://sonarcloud.io</sonar.host.url>  
+    <sonar.host.url>https://sonarcloud.io</sonar.host.url>
+    
+    <checkstyle.version>2.17</checkstyle.version>
+
 	</properties>
 
 	<dependencies>
@@ -55,7 +59,12 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
-			</plugin>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-checkstyle-plugin</artifactId>
+        <version>${checkstyle.version}</version>
+    </plugin>
 		</plugins>
 	</build>
 
