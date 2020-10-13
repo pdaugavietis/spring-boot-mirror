@@ -4,7 +4,7 @@ podTemplate(containers: [
   persistentVolumeClaim(mountPath: '/root/.m2/repository', claimName: 'maven-repo', readOnly: false)
   ]) {
 
-  node(POD_LABEL) {
+  node("maven") {
     checkout scm
     stage('Compile and Analysis') {
       parallel 'Compilation': {
