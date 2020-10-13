@@ -9,13 +9,13 @@ podTemplate(containers: [
     stage('Compile and Analysis') {
       parallel 'Compilation': {
         if (isUnix()) {
-            sh "./mvnw clean compile -DskipTests"
+            sh "mvn clean compile -DskipTests"
         } else {
-            bat "./mvnw.cmd clean compile -DskipTests"
+            bat "mvn.cmd clean compile -DskipTests"
         }
       }, 'Static Analysis': {
         stage("Checkstyle") {
-            sh "./mvnw checkstyle:checkstyle"
+            sh "mvn checkstyle:checkstyle"
             
             step([$class: 'CheckStylePublisher',
               canRunOnFailed: true,
@@ -29,9 +29,9 @@ podTemplate(containers: [
         }, 'SonarQube Analysis': {
           stage("Sonarqube") {
             if (isUnix()) {
-                sh "SONAR_TOKEN=d1f1cf8d1499413fce7ce3596910c966de2fed3e ./mvnw verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar"
+                sh "SONAR_TOKEN=d1f1cf8d1499413fce7ce3596910c966de2fed3e mvn verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar"
             } else {
-                bat "SONAR_TOKEN=d1f1cf8d1499413fce7ce3596910c966de2fed3e ./mvnw verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar"
+                bat "SONAR_TOKEN=d1f1cf8d1499413fce7ce3596910c966de2fed3e mvn verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar"
             }
           }
         }
@@ -42,9 +42,9 @@ podTemplate(containers: [
         stage("Running Unit Tests") {
           try {
               if (isUnix()) {
-                  sh "./mvnw test -Punit"
+                  sh "mvn test -Punit"
               } else {
-                  bat "./mvnw.cmd test -Punit"
+                  bat "mvn.cmd test -Punit"
               }
           } catch(err) {
               step([$class: 'JUnitResultArchiver', testResults: '**/target/surefire-reports/TEST-*UnitTest.xml'])
@@ -56,9 +56,9 @@ podTemplate(containers: [
         stage("Running integration tests") {
             try {
                 if (isUnix()) {
-                    sh "./mvnw test -Pintegration"
+                    sh "mvn test -Pintegration"
                 } else {
-                    bat "./mvnw.cmd test -Pintegration"
+                    bat "mvn.cmd test -Pintegration"
                 }
             } catch(err) {
                 step([$class: 'JUnitResultArchiver', testResults: '**/target/surefire-reports/TEST-*IntegrationTest.xml'])
