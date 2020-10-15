@@ -21,5 +21,6 @@ podTemplate(containers: [
         sh 'mvn -B package'
       }
     }
+    logstashSend failBuild: false, maxLines: 1000
   }
 }
