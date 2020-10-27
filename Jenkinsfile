@@ -44,6 +44,11 @@ spec:
         sh 'mvn -B package'
       }
     }
+    stage('Analyze with Sonarcloud') {
+      container('maven') {
+        sh 'SONAR_TOKEN=f286b82e003fca14ca9108f720a609a0f9e71d95 mvn sonar:sonar'
+      }
+    }
     //logstashSend failBuild: false, maxLines: 1000
   }
 }
