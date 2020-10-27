@@ -44,6 +44,6 @@ spec:
         sh 'mvn -B package'
       }
     }
-    logstashSend failBuild: false, maxLines: 1000
+    //logstashSend failBuild: false, maxLines: 1000
   }
 }
