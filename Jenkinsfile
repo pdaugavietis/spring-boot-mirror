@@ -24,7 +24,8 @@ spec:
       value: -Duser.home=/home/jenkins
   volumes:
   - name: home-volume
-    emptyDir: {}
+    persistentVolumeClaim:
+        claimName: home-volume-claim
 ''') {
 
   node(POD_LABEL) {
