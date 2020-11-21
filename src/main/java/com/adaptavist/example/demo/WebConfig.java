@@ -9,7 +9,7 @@ class WebConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
-                .antMatchers("/my-anon-page").permitAll()
+                .antMatchers("/hello").permitAll()
                 .anyRequest().authenticated()
             .and().oauth2Client()
             .and().oauth2Login();

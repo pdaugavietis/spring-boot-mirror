@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class DefaultController {
 
-    @GetMapping("/")
+    @GetMapping
     public String getMessageOfTheDay(@AuthenticationPrincipal OidcUser user) {
         return user.getName() + ", this message of the day is boring";
     }
