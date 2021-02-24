@@ -25,7 +25,7 @@ spec:
   volumes:
   - name: home-volume
     persistentVolumeClaim:
-        claimName: home-volume-claim
+        claimName: jenkins-agent-home
 ''') {
 
   node(POD_LABEL) {
