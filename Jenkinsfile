@@ -29,19 +29,20 @@ podTemplate(containers: [
     stage('Tests and Deployment') {
       parallel 'Unit Tests': {
         stage("Running Unit Tests") {
-          container("maven") {
-            try {
-                if (isUnix()) {
-                    sh "mvn test -Punit"
-                } else {
-                    bat "mvn.cmd test -Punit"
-                }
-            } catch(err) {
-                step([$class: 'JUnitResultArchiver', testResults: '**/target/surefire-reports/TEST-*UnitTest.xml'])
-                throw err
-            }
-            step([$class: 'JUnitResultArchiver', testResults: '**/target/surefire-reports/TEST-*UnitTest.xml'])
-          }
+          echo "IntegrationTest here..."
+//           container("maven") {
+//             try {
+//                 if (isUnix()) {
+//                     sh "mvn test -Punit"
+//                 } else {
+//                     bat "mvn.cmd test -Punit"
+//                 }
+//             } catch(err) {
+//                 step([$class: 'JUnitResultArchiver', testResults: '**/target/surefire-reports/TEST-*UnitTest.xml'])
+//                 throw err
+//             }
+//             step([$class: 'JUnitResultArchiver', testResults: '**/target/surefire-reports/TEST-*UnitTest.xml'])
+//           }
         }
       }, 'Integration Tests': {
         stage("Running integration tests") {
