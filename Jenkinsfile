@@ -17,20 +17,11 @@ podTemplate(containers: [
         }
       }, 'Static Analysis': {
         stage("Checkstyle") {
-          container("maven") {
-            sh "mvn checkstyle:checkstyle"
-            recordIssues enabledForFailure: true, tool: checkStyle()
-          }
+          echo "CheckStyle here..."
         }
         }, 'SonarQube Analysis': {
           stage("Sonarqube") {
-            container("maven") {
-              if (isUnix()) {
-                  sh "SONAR_TOKEN=d1f1cf8d1499413fce7ce3596910c966de2fed3e mvn verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar"
-              } else {
-                  bat "SONAR_TOKEN=d1f1cf8d1499413fce7ce3596910c966de2fed3e mvn verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar"
-              }
-            }
+            echo "Scanning here..."
           }
         }
     }
