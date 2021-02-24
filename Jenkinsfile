@@ -71,5 +71,14 @@ podTemplate(containers: [
         }
       }
     }
+
+    stage('Deploy to Nexus') {
+      container('maven') {
+        container("maven") {
+          sh 'mvn -B deploy'
+        }
+      }
+    }
+
   }
 }
