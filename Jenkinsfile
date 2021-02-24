@@ -78,11 +78,11 @@ podTemplate(containers: [
           nexusArtifactUploader(
               nexusVersion: nexus3,
               protocol: https,
-              nexusUrl: nexus.pdaugavietis.staff.adaptavist.com,
+              nexusUrl: "nexus.pdaugavietis.staff.adaptavist.com",
               groupId: pom.groupId,
               version: pom.version,
-              repository: maven-releases,
-              credentialsId: 19d1d5b4-0912-4b84-9689-d090ca92078a,
+              repository: "maven-releases",
+              credentialsId: "19d1d5b4-0912-4b84-9689-d090ca92078a",
               artifacts: [
                   [artifactId: pom.artifactId,
                   classifier: '',
