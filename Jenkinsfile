@@ -74,27 +74,25 @@ podTemplate(containers: [
 
     stage('Deploy to Nexus') {
       container('maven') {
-        container("maven") {
-          nexusArtifactUploader(
-              nexusVersion: nexus3,
-              protocol: https,
-              nexusUrl: "nexus.pdaugavietis.staff.adaptavist.com",
-              groupId: pom.groupId,
-              version: pom.version,
-              repository: "maven-releases",
-              credentialsId: "19d1d5b4-0912-4b84-9689-d090ca92078a",
-              artifacts: [
-                  [artifactId: pom.artifactId,
-                  classifier: '',
-                  file: artifactPath,
-                  type: pom.packaging],
-                  [artifactId: pom.artifactId,
-                  classifier: '',
-                  file: "pom.xml",
-                  type: "pom"]
-              ]
-          );
-        }
+        nexusArtifactUploader(
+            nexusVersion: nexus3,
+            protocol: https,
+            nexusUrl: "nexus.pdaugavietis.staff.adaptavist.com",
+            groupId: pom.groupId,
+            version: pom.version,
+            repository: "maven-releases",
+            credentialsId: "19d1d5b4-0912-4b84-9689-d090ca92078a",
+            artifacts: [
+                [artifactId: pom.artifactId,
+                classifier: '',
+                file: artifactPath,
+                type: pom.packaging],
+                [artifactId: pom.artifactId,
+                classifier: '',
+                file: "pom.xml",
+                type: "pom"]
+            ]
+        );
       }
     }
 
