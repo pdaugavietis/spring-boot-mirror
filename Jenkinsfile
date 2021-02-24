@@ -59,7 +59,7 @@ podTemplate(containers: [
 //                 throw err
 //             }
 //             step([$class: 'JUnitResultArchiver', testResults: '**/target/surefire-reports/TEST-*IntegrationTest.xml'])
-          }
+//           }
         }
       }
     }
