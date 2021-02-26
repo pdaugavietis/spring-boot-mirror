@@ -67,7 +67,10 @@ podTemplate(containers: [
     stage('Generate Artifact Project') {
       container('maven') {
         container("maven") {
-          sh 'mvn -B deploy'
+          configFileProvider(
+            [configFile(fileId: 'maven-settings', variable: 'MAVEN_SETTINGS')]) {
+              sh 'mvn -s $MAVEN_SETTINGS clean deploy'
+          }
         }
       }
     }
