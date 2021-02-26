@@ -65,14 +65,11 @@ podTemplate(containers: [
     }
 
     stage('Generate Artifact Project') {
-      container('maven') {
         container("maven") {
-          configFileProvider(
-            [configFile(fileId: '238fb9a6-b1dc-4e95-873a-fede78b208bd', variable: 'MAVEN_SETTINGS')]) {
+          configFileProvider([configFile(fileId: '238fb9a6-b1dc-4e95-873a-fede78b208bd', variable: 'MAVEN_SETTINGS')]) {
               sh 'mvn -s $MAVEN_SETTINGS clean deploy'
           }
         }
-      }
     }
 
   }
