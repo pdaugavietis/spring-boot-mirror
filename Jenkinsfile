@@ -1,8 +1,32 @@
-podTemplate(containers: [
-  containerTemplate(name: 'maven', image: 'maven:3.6.0-jdk-8-alpine', ttyEnabled: true, command: 'cat')
-  ], volumes: [
-  persistentVolumeClaim(mountPath: '/root/.m2/repository', claimName: 'maven-repo', readOnly: false)
-  ]) {
+podTemplate(
+	yaml:'''
+spec:
+  containers:
+  - name: jnlp
+    image: jenkins/jnlp-slave:4.0.1-1
+    volumeMounts:
+    - name: home-volume
+      mountPath: /home/jenkins
+    env:
+    - name: HOME
+      value: /home/jenkins
+  - name: maven
+    image: maven:3.6.3-jdk-8
+    command: ['cat']
+    tty: true
+    volumeMounts:
+    - name: home-volume
+      mountPath: /home/jenkins
+    env:
+    - name: HOME
+      value: /home/jenkins
+    - name: MAVEN_OPTS
+      value: -Duser.home=/home/jenkins
+  volumes:
+  - name: home-volume
+    persistentVolumeClaim:
+        claimName: jenkins-agent-home
+''') {
 
   node(POD_LABEL) {
     checkout scm
@@ -76,6 +100,5 @@ podTemplate(containers: [
           }
         }
     }
-
   }
 }
