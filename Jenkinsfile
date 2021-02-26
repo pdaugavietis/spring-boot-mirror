@@ -67,36 +67,8 @@ podTemplate(containers: [
     stage('Generate Artifact Project') {
       container('maven') {
         container("maven") {
-          sh 'mvn -B package'
+          sh 'mvn -B deploy'
         }
-      }
-    }
-
-    stage('Deploy to Nexus') {
-      container('maven') {
-        nexusPublisher(
-          nexusInstanceId: 'nexus-main', 
-          nexusRepositoryId: 'maven-releases', 
-          packages: [
-            [
-              $class: 'MavenPackage', 
-              mavenAssetList: [
-                [
-                  classifier: '', 
-                  extension: '', 
-                  filePath: 'target/*.jar'
-                ]
-              ], 
-              mavenCoordinate: [
-                artifactId: 'spring-boot-demo', 
-                groupId: 'com.adaptavist.springboot.demo', 
-                packaging: 'jar', 
-                version: '1.0'
-              ]
-            ]
-          ], 
-          tagName: 'build-125'
-        )
       }
     }
 
