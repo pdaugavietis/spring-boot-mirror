@@ -30,26 +30,70 @@ spec:
 
   node(POD_LABEL) {
     checkout scm
-    stage('Build Project') {
-      container('maven') {
-        sh 'mvn -B clean compile'
+    stage('Compile and Analysis') {
+      parallel 'Compilation': {
+        container("maven") {
+          if (isUnix()) {
+              sh "mvn compile -DskipTests -Dmaven.test.skip=true"
+          } else {
+              bat "mvn.cmd compile -DskipTests -Dmaven.test.skip=true"
+          }
+        }
+      }, 'Static Analysis': {
+        stage("Checkstyle") {
+          echo "CheckStyle here..."
+        }
+        }, 'SonarQube Analysis': {
+          stage("Sonarqube") {
+            echo "Scanning here..."
+          }
+        }
+    }
+
+    stage('Tests and Deployment') {
+      parallel 'Unit Tests': {
+        stage("Running Unit Tests") {
+          echo "IntegrationTest here..."
+//           container("maven") {
+//             try {
+//                 if (isUnix()) {
+//                     sh "mvn test -Punit"
+//                 } else {
+//                     bat "mvn.cmd test -Punit"
+//                 }
+//             } catch(err) {
+//                 step([$class: 'JUnitResultArchiver', testResults: '**/target/surefire-reports/TEST-*UnitTest.xml'])
+//                 throw err
+//             }
+//             step([$class: 'JUnitResultArchiver', testResults: '**/target/surefire-reports/TEST-*UnitTest.xml'])
+//           }
+        }
+      }, 'Integration Tests': {
+        stage("Running integration tests") {
+          echo "IntegrationTest here..."
+//           container("maven") {
+//               try {
+//                 if (isUnix()) {
+//                     sh "mvn test -Pintegration"
+//                 } else {
+//                     bat "mvn.cmd test -Pintegration"
+//                 }
+//             } catch(err) {
+//                 step([$class: 'JUnitResultArchiver', testResults: '**/target/surefire-reports/TEST-*IntegrationTest.xml'])
+//                 throw err
+//             }
+//             step([$class: 'JUnitResultArchiver', testResults: '**/target/surefire-reports/TEST-*IntegrationTest.xml'])
+//           }
+        }
       }
     }
-    stage('Test Project') {
-      container('maven') {
-        sh 'mvn -B test'
-      }
-    }
+
     stage('Generate Artifact Project') {
-      container('maven') {
-        sh 'mvn -B package'
-      }
+        container("maven") {
+          configFileProvider([configFile(fileId: '238fb9a6-b1dc-4e95-873a-fede78b208bd', variable: 'MAVEN_SETTINGS')]) {
+              sh 'mvn -s $MAVEN_SETTINGS clean deploy'
+          }
+        }
     }
-    stage('Analyze with Sonarcloud') {
-      container('maven') {
-        sh 'SONAR_TOKEN=f286b82e003fca14ca9108f720a609a0f9e71d95 mvn sonar:sonar'
-      }
-    }
-    //logstashSend failBuild: false, maxLines: 1000
   }
 }
