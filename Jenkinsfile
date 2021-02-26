@@ -68,7 +68,7 @@ podTemplate(containers: [
       container('maven') {
         container("maven") {
           configFileProvider(
-            [configFile(fileId: 'maven-settings', variable: 'MAVEN_SETTINGS')]) {
+            [configFile(fileId: '238fb9a6-b1dc-4e95-873a-fede78b208bd', variable: 'MAVEN_SETTINGS')]) {
               sh 'mvn -s $MAVEN_SETTINGS clean deploy'
           }
         }
