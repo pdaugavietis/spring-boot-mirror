@@ -74,25 +74,29 @@ podTemplate(containers: [
 
     stage('Deploy to Nexus') {
       container('maven') {
-        nexusArtifactUploader(
-            nexusVersion: "nexus3",
-            protocol: "https",
-            nexusUrl: "nexus.pdaugavietis.staff.adaptavist.com",
-            groupId: "com.adaptavist.samples",
-            version: "1.0",
-            repository: "maven-releases",
-            credentialsId: "19d1d5b4-0912-4b84-9689-d090ca92078a",
-            artifacts: [
-                [artifactId: "spring-boot-example",
-                classifier: '',
-                file: "target/*.jar",
-                type: "jar"],
-                [artifactId: "spring-boot-example",
-                classifier: '',
-                file: "pom.xml",
-                type: "pom"]
+        nexusPublisher(
+          nexusInstanceId: 'nexus-main', 
+          nexusRepositoryId: 'maven-releases', 
+          packages: [
+            [
+              $class: 'MavenPackage', 
+              mavenAssetList: [
+                [
+                  classifier: '', 
+                  extension: '', 
+                  filePath: 'target/*.jar'
+                ]
+              ], 
+              mavenCoordinate: [
+                artifactId: 'spring-boot-demo', 
+                groupId: 'com.adaptavist.springboot.demo', 
+                packaging: 'jar', 
+                version: '1.0'
+              ]
             ]
-        );
+          ], 
+          tagName: 'build-125'
+        )
       }
     }
 
