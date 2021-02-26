@@ -75,8 +75,8 @@ podTemplate(containers: [
     stage('Deploy to Nexus') {
       container('maven') {
         nexusArtifactUploader(
-            nexusVersion: nexus3,
-            protocol: https,
+            nexusVersion: "nexus3,"
+            protocol: "https",
             nexusUrl: "nexus.pdaugavietis.staff.adaptavist.com",
             groupId: pom.groupId,
             version: pom.version,
